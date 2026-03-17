@@ -1,0 +1,85 @@
+<!-- views/car-detail.html -->
+<section class="catalog-section">
+  <div class="section-header">
+    <div class="section-title-group">
+      <p class="section-label">Vehicle Detail</p>
+      <h2 class="section-title" ng-if="car">{{ car.make }} {{ car.model }}</h2>
+      <h2 class="section-title" ng-if="!car && !loading">Not Found</h2>
+    </div>
+    <button class="btn-details" ng-click="goBack()">← Back to Catalog</button>
+  </div>
+
+  <div ng-if="loading" style="text-align:center;padding:5rem 0;color:#7878a0">
+    <p style="font-size:1.2rem;letter-spacing:2px">LOADING VEHICLE…</p>
+  </div>
+
+  <div ng-if="!loading && car" class="modal" style="max-width:1100px;margin:0 auto;">
+    <div class="modal-header" style="height:420px;">
+      <img ng-src="{{ car.image }}" alt="{{ car.make }} {{ car.model }}" />
+      <div class="modal-header-overlay"></div>
+    </div>
+
+    <div class="modal-body">
+      <p class="modal-make">{{ car.make }}</p>
+      <h2 class="modal-title">{{ car.model }}</h2>
+      <p class="modal-year">{{ car.year }} · {{ car.category }} · {{ car.color }}</p>
+
+      <p class="modal-desc">{{ car.description }}</p>
+
+      <div class="modal-specs-grid">
+        <div class="modal-spec-card">
+          <div class="modal-spec-icon">⚙️</div>
+          <p class="modal-spec-label">Engine</p>
+          <p class="modal-spec-val">{{ car.engine }}</p>
+        </div>
+        <div class="modal-spec-card">
+          <div class="modal-spec-icon">⚡</div>
+          <p class="modal-spec-label">Horsepower</p>
+          <p class="modal-spec-val" style="color:var(--red)">{{ car.horsepower }} HP</p>
+        </div>
+        <div class="modal-spec-card">
+          <div class="modal-spec-icon">🔄</div>
+          <p class="modal-spec-label">Transmission</p>
+          <p class="modal-spec-val">{{ car.transmission }}</p>
+        </div>
+        <div class="modal-spec-card">
+          <div class="modal-spec-icon">⛽</div>
+          <p class="modal-spec-label">Fuel Type</p>
+          <p class="modal-spec-val" ng-class="{ 'electric-tag': car.fuel === 'Electric' }">{{ car.fuel }}</p>
+        </div>
+        <div class="modal-spec-card">
+          <div class="modal-spec-icon">💺</div>
+          <p class="modal-spec-label">Seats</p>
+          <p class="modal-spec-val">{{ car.seats }}</p>
+        </div>
+        <div class="modal-spec-card">
+          <div class="modal-spec-icon">🛣️</div>
+          <p class="modal-spec-label">Mileage</p>
+          <p class="modal-spec-val">{{ car.mileage | mileage }}</p>
+        </div>
+        <div class="modal-spec-card">
+          <div class="modal-spec-icon">⭐</div>
+          <p class="modal-spec-label">Rating</p>
+          <p class="modal-spec-val" style="color:var(--accent)">{{ car.rating }} / 5</p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <span class="modal-price">{{ car.price | currency2 }}</span>
+        <div class="modal-actions">
+          <button class="btn-save" ng-click="toggleWishlist()">
+            {{ isWishlisted(car.id) ? '❤️ Saved' : '🤍 Save' }}
+          </button>
+          <button class="btn-enquire">Enquire Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div ng-if="!loading && !car" class="empty-state">
+    <div class="empty-icon">🚫</div>
+    <h3>Vehicle not found</h3>
+    <p>Try going back to the catalog and selecting a different car.</p>
+  </div>
+</section>
+

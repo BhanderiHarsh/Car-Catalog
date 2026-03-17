@@ -1,0 +1,113 @@
+<!-- views/home.html -->
+
+<!-- ═══ HERO ══════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-glow"></div>
+
+  <div class="hero-content">
+    <p class="hero-eyebrow">Premium Automotive Catalog</p>
+    <h1 class="hero-title">
+      FIND YOUR<br>
+      <span class="highlight">DREAM</span><br>
+      MACHINE
+    </h1>
+    <p class="hero-desc">
+      Discover an exclusive collection of the world's finest automobiles.
+      From screaming supercars to whisper-quiet electrics — your perfect car awaits.
+    </p>
+    <div class="hero-cta">
+      <a href="#!/catalog" class="btn-primary">Browse Catalog</a>
+      <a href="#!/wishlist" class="btn-ghost">My Wishlist</a>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat-item">
+      <div class="stat-number">{{ stats.cars }}</div>
+      <div class="stat-label">Cars Listed</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">{{ stats.categories }}</div>
+      <div class="stat-label">Categories</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">{{ stats.verified }}%</div>
+      <div class="stat-label">Verified</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FEATURED ══════════════════════════════════════════════ -->
+<section class="catalog-section">
+  <div class="section-header">
+    <div class="section-title-group">
+      <p class="section-label">Hand Picked</p>
+      <h2 class="section-title">FEATURED CARS</h2>
+    </div>
+    <a href="#!/catalog" class="btn-ghost" style="font-size:0.85rem">View All →</a>
+  </div>
+
+  <!-- Loading spinner -->
+  <div ng-if="loading" style="text-align:center;padding:4rem 0;color:#7878a0">
+    <p style="font-size:1.1rem">Loading vehicles…</p>
+  </div>
+
+  <div class="cars-grid" ng-if="!loading">
+    <div class="car-card"
+         ng-repeat="car in featured"
+         ng-click="openModal(car)">
+
+      <!-- Image -->
+      <div class="card-image">
+        <img ng-src="{{ car.image }}" alt="{{ car.make }} {{ car.model }}" loading="lazy" />
+        <div class="card-image-overlay"></div>
+        <span class="card-badge" ng-if="car.badge" ng-class="car.badge | badgeClass">{{ car.badge }}</span>
+        <button class="card-wishlist"
+                ng-class="{ wishlisted: isWishlisted(car.id) }"
+                ng-click="$event.stopPropagation(); toggleWishlist($event, car)">
+          {{ isWishlisted(car.id) ? '❤️' : '🤍' }}
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="card-body">
+        <p class="card-make">{{ car.make }}</p>
+        <h3 class="card-name">{{ car.model }}</h3>
+        <p class="card-year">{{ car.year }} · {{ car.category }}</p>
+
+        <div class="card-specs">
+          <div class="spec-item">
+            <span class="spec-label">Engine</span>
+            <span class="spec-value">{{ car.engine | shortEngine }}</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">Power</span>
+            <span class="spec-value hp">{{ car.horsepower }} HP</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">Gearbox</span>
+            <span class="spec-value">{{ car.transmission }}</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">Fuel</span>
+            <span class="spec-value"
+                  ng-class="{ 'electric-tag': car.fuel === 'Electric' }">{{ car.fuel }}</span>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <div class="card-price">
+            <span class="price-label">Starting at</span>
+            <span class="price-value">{{ car.price | currency2 }}</span>
+          </div>
+          <div class="card-rating">
+            <span class="stars">★★★★★</span>
+            <span>{{ car.rating }}</span>
+          </div>
+          <button class="btn-details" ng-click="goToDetail($event, car)">Details</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,214 @@
+<!-- views/catalog.html -->
+<section class="catalog-section" close-on-esc="closeModal">
+
+  <!-- Section Header -->
+  <div class="section-header">
+    <div class="section-title-group">
+      <p class="section-label">Full Collection</p>
+      <h2 class="section-title">ALL VEHICLES</h2>
+    </div>
+    <p class="result-count">
+      Showing <span>{{ filteredCars().length }}</span> of {{ cars.length }} cars
+    </p>
+  </div>
+
+  <!-- Controls Bar -->
+  <div class="controls-bar">
+    <!-- Search -->
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text"
+             ng-model="searchQuery"
+             placeholder="Search make, model or year…"
+             aria-label="Search cars" />
+    </div>
+
+    <!-- Sort -->
+    <select class="filter-select" ng-model="sortBy">
+      <option value="featured">Featured First</option>
+      <option value="price-asc">Price: Low → High</option>
+      <option value="price-desc">Price: High → Low</option>
+      <option value="hp-desc">Most Powerful</option>
+      <option value="rating">Top Rated</option>
+      <option value="newest">Newest Year</option>
+    </select>
+
+    <!-- Fuel -->
+    <select class="filter-select" ng-model="fuelFilter">
+      <option value="All">All Fuels</option>
+      <option value="Petrol">Petrol</option>
+      <option value="Electric">Electric</option>
+    </select>
+
+    <!-- Grid / List toggle -->
+    <div class="view-toggle">
+      <button class="view-btn" ng-class="{ active: viewMode === 'grid' }" ng-click="setView('grid')">⊞</button>
+      <button class="view-btn" ng-class="{ active: viewMode === 'list' }" ng-click="setView('list')">☰</button>
+    </div>
+  </div>
+
+  <!-- Category Pills -->
+  <div class="category-pills">
+    <button class="pill"
+            ng-repeat="cat in categories"
+            ng-class="{ active: activeCategory === cat }"
+            ng-click="setCategory(cat)">
+      {{ cat }}
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div ng-if="loading" style="text-align:center;padding:5rem 0;color:#7878a0">
+    <p style="font-size:1.2rem;letter-spacing:2px">LOADING FLEET…</p>
+  </div>
+
+  <!-- Cars Grid -->
+  <div ng-if="!loading" class="cars-grid" ng-class="{ 'list-view': viewMode === 'list' }">
+
+    <!-- Empty State -->
+    <div class="empty-state" ng-if="filteredCars().length === 0">
+      <div class="empty-icon">🚗</div>
+      <h3>No vehicles found</h3>
+      <p>Try adjusting your filters or search query.</p>
+    </div>
+
+    <!-- Car Cards -->
+    <div class="car-card"
+         ng-repeat="car in filteredCars()"
+         ng-click="openModal(car)">
+
+      <div class="card-image">
+        <img ng-src="{{ car.image }}" alt="{{ car.make }} {{ car.model }}" loading="lazy" />
+        <div class="card-image-overlay"></div>
+        <span class="card-badge" ng-if="car.badge" ng-class="car.badge | badgeClass">{{ car.badge }}</span>
+        <button class="card-wishlist"
+                ng-class="{ wishlisted: isWishlisted(car.id) }"
+                ng-click="toggleWishlist($event, car)">
+          {{ isWishlisted(car.id) ? '❤️' : '🤍' }}
+        </button>
+      </div>
+
+      <div class="card-body">
+        <p class="card-make">{{ car.make }}</p>
+        <h3 class="card-name">{{ car.model }}</h3>
+        <p class="card-year">{{ car.year }} · {{ car.category }}</p>
+
+        <div class="card-specs">
+          <div class="spec-item">
+            <span class="spec-label">Engine</span>
+            <span class="spec-value">{{ car.engine | shortEngine }}</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">Power</span>
+            <span class="spec-value hp">{{ car.horsepower }} HP</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">Gearbox</span>
+            <span class="spec-value">{{ car.transmission }}</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">Fuel</span>
+            <span class="spec-value"
+                  ng-class="{ 'electric-tag': car.fuel === 'Electric' }">{{ car.fuel }}</span>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <div class="card-price">
+            <span class="price-label">Starting at</span>
+            <span class="price-value">{{ car.price | currency2 }}</span>
+          </div>
+          <div class="card-rating">
+            <span class="stars">★★★★★</span> {{ car.rating }}
+          </div>
+          <button class="btn-details" ng-click="goToDetail($event, car)">Details</button>
+        </div>
+      </div>
+
+    </div><!-- /car-card -->
+  </div><!-- /cars-grid -->
+
+  <!-- ─── MODAL ─────────────────────────── -->
+  <div class="modal-overlay"
+       ng-class="{ open: modalOpen }"
+       ng-click="overlayClick($event)">
+    <div class="modal" ng-if="selectedCar">
+
+      <div class="modal-header">
+        <img ng-src="{{ selectedCar.image }}" alt="{{ selectedCar.make }} {{ selectedCar.model }}" />
+        <div class="modal-header-overlay"></div>
+        <button class="modal-close" ng-click="closeModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-make">{{ selectedCar.make }}</p>
+        <h2 class="modal-title">{{ selectedCar.model }}</h2>
+        <p class="modal-year">{{ selectedCar.year }} · {{ selectedCar.category }} · {{ selectedCar.color }}</p>
+
+        <p class="modal-desc">{{ selectedCar.description }}</p>
+
+        <div class="modal-specs-grid">
+          <div class="modal-spec-card">
+            <div class="modal-spec-icon">⚙️</div>
+            <p class="modal-spec-label">Engine</p>
+            <p class="modal-spec-val">{{ selectedCar.engine }}</p>
+          </div>
+          <div class="modal-spec-card">
+            <div class="modal-spec-icon">⚡</div>
+            <p class="modal-spec-label">Horsepower</p>
+            <p class="modal-spec-val" style="color:#e84b4b">{{ selectedCar.horsepower }} HP</p>
+          </div>
+          <div class="modal-spec-card">
+            <div class="modal-spec-icon">🔄</div>
+            <p class="modal-spec-label">Transmission</p>
+            <p class="modal-spec-val">{{ selectedCar.transmission }}</p>
+          </div>
+          <div class="modal-spec-card">
+            <div class="modal-spec-icon">⛽</div>
+            <p class="modal-spec-label">Fuel Type</p>
+            <p class="modal-spec-val"
+               ng-class="{ 'electric-tag': selectedCar.fuel === 'Electric' }">{{ selectedCar.fuel }}</p>
+          </div>
+          <div class="modal-spec-card">
+            <div class="modal-spec-icon">🎨</div>
+            <p class="modal-spec-label">Color</p>
+            <p class="modal-spec-val">{{ selectedCar.color }}</p>
+          </div>
+          <div class="modal-spec-card">
+            <div class="modal-spec-icon">💺</div>
+            <p class="modal-spec-label">Seats</p>
+            <p class="modal-spec-val">{{ selectedCar.seats }}</p>
+          </div>
+          <div class="modal-spec-card">
+            <div class="modal-spec-icon">🛣️</div>
+            <p class="modal-spec-label">Mileage</p>
+            <p class="modal-spec-val">{{ selectedCar.mileage | mileage }}</p>
+          </div>
+          <div class="modal-spec-card">
+            <div class="modal-spec-icon">⭐</div>
+            <p class="modal-spec-label">Rating</p>
+            <p class="modal-spec-val" style="color:var(--accent)">{{ selectedCar.rating }} / 5</p>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <span class="modal-price">{{ selectedCar.price | currency2 }}</span>
+          <div class="modal-actions">
+            <button class="btn-save"
+                    ng-click="toggleWishlist($event, selectedCar)"
+                    ng-class="{ wishlisted: isWishlisted(selectedCar.id) }">
+              {{ isWishlisted(selectedCar.id) ? '❤️ Saved' : '🤍 Save' }}
+            </button>
+            <button class="btn-enquire">Enquire Now</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /modal-overlay -->
+
+  <!-- ─── TOAST ─────────────────────────── -->
+  <div class="toast" ng-class="{ show: showToast }">
+    {{ toastMsg }}
+  </div>
+
+</section>

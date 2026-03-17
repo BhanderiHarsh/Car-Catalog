@@ -1,0 +1,83 @@
+<!-- views/wishlist.html -->
+<section class="catalog-section">
+
+  <div class="section-header">
+    <div class="section-title-group">
+      <p class="section-label">Your Collection</p>
+      <h2 class="section-title">WISHLIST</h2>
+    </div>
+    <p class="result-count">
+      <span>{{ cars.length }}</span> saved vehicles
+    </p>
+  </div>
+
+  <!-- Loading -->
+  <div ng-if="loading" style="text-align:center;padding:5rem 0;color:#7878a0">
+    <p>Loading wishlist…</p>
+  </div>
+
+  <!-- Empty -->
+  <div ng-if="!loading && cars.length === 0" class="empty-state">
+    <div class="empty-icon">💔</div>
+    <h3>Your wishlist is empty</h3>
+    <p style="margin-bottom:2rem">Start browsing and save cars you love.</p>
+    <button class="btn-primary" ng-click="goCatalog()">Browse Catalog</button>
+  </div>
+
+  <!-- Grid -->
+  <div class="cars-grid" ng-if="!loading && cars.length > 0">
+    <div class="car-card"
+         ng-repeat="car in cars"
+         ng-click="openDetail(car)">
+
+      <div class="card-image">
+        <img ng-src="{{ car.image }}" alt="{{ car.make }} {{ car.model }}" loading="lazy" />
+        <div class="card-image-overlay"></div>
+        <span class="card-badge" ng-if="car.badge" ng-class="car.badge | badgeClass">{{ car.badge }}</span>
+        <button class="card-wishlist wishlisted"
+                ng-click="$event.stopPropagation(); remove(car)">
+          ❤️
+        </button>
+      </div>
+
+      <div class="card-body">
+        <p class="card-make">{{ car.make }}</p>
+        <h3 class="card-name">{{ car.model }}</h3>
+        <p class="card-year">{{ car.year }} · {{ car.category }}</p>
+
+        <div class="card-specs">
+          <div class="spec-item">
+            <span class="spec-label">Engine</span>
+            <span class="spec-value">{{ car.engine | shortEngine }}</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">Power</span>
+            <span class="spec-value hp">{{ car.horsepower }} HP</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">Gearbox</span>
+            <span class="spec-value">{{ car.transmission }}</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">Fuel</span>
+            <span class="spec-value"
+                  ng-class="{ 'electric-tag': car.fuel === 'Electric' }">{{ car.fuel }}</span>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <div class="card-price">
+            <span class="price-label">Starting at</span>
+            <span class="price-value">{{ car.price | currency2 }}</span>
+          </div>
+          <button class="btn-details" ng-click="$event.stopPropagation(); remove(car)"
+                  style="border-color:#e84b4b;color:#e84b4b">
+            Remove
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</section>

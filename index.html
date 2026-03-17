@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="carCatalogApp">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AutoElite — Car Catalog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body scroll-top>
+
+  <!-- ═══ NAVBAR ════════════════════════════════════════ -->
+  <nav class="navbar" ng-controller="NavCtrl">
+    <a class="nav-logo" href="#!/">Auto<span>Elite</span></a>
+
+    <ul class="nav-links">
+      <li><a href="#!/"        ng-class="{ active: isActive('/') }">Home</a></li>
+      <li><a href="#!/catalog" ng-class="{ active: isActive('/catalog') }">Catalog</a></li>
+      <li><a href="#!/wishlist" ng-class="{ active: isActive('/wishlist') }">Wishlist</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <a href="#!/wishlist" class="btn-compare">
+        ❤️ Wishlist
+        <span ng-if="wishlistCount() > 0"> ({{ wishlistCount() }})</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- ═══ ROUTER VIEW ═══════════════════════════════════ -->
+  <main ng-view></main>
+
+  <!-- ═══ FOOTER ════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="footer-logo">Auto<span>Elite</span></div>
+    <p class="footer-copy">© 2024 AutoElite Car Catalog. All rights reserved.</p>
+  </footer>
+
+  <!-- ═══ SCRIPTS ═══════════════════════════════════════ -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular-route.min.js"></script>
+
+  <script src="js/app.js"></script>
+  <script src="js/services/carService.js"></script>
+  <script src="js/filters/filters.js"></script>
+  <script src="js/directives/directives.js"></script>
+  <script src="js/controllers/controllers.js"></script>
+</body>
+</html>
