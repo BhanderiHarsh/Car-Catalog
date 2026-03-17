@@ -1,7 +1,5 @@
 # 🚗 AutoElite — Premium Car Catalog
 
-![AutoElite Banner](https://via.placeholder.com/1200x400.png?text=AutoElite+Car+Catalog)
-
 [![AngularJS](https://img.shields.io/badge/AngularJS-1.8.3-red.svg?logo=angular)](https://angularjs.org/)
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
 [![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
